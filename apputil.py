@@ -29,12 +29,12 @@ class GroupEstimate(object):
 
         return self
 
-    def predict(self, X):
+    def predict(self, X_):
 
         column_names = self.group_estimates.index.names
         # Gathering the names of the columns from our estimates
 
-        if isinstance(X, pd.DataFrame):
+        if isinstance(X_, pd.DataFrame):
             X_New = X_[column_names]
         elif len(column_names) == 1:
             X_New = pd.DataFrame({column_names[0]: X_})
