@@ -30,4 +30,30 @@ def GroupEstimate(object):
         return self
 
     def predict(self, X):
-        return None
+
+        column_names = self.group_estimates.index.names
+        # Gathering the names of the columns from our estimates
+
+        if isinstance(X, pd.DataFrame):
+            X_New = X_[column_names]
+        elif len(column_names) == 1:
+            X_New = pd.DataFrame({column_names[0]: X_})
+        else:
+            X_New = pd.DataFrame(X_, columns=column_names)
+        # Creating X_New based on estimates and column names.
+
+        if isinstance(self.group_estimates.index, pd.MultiIndex):
+            groups = pd.MultiIndex.from_frame(X_New)
+        else:
+            groups = X_New.iloc[:, 0]
+        # Finding groups of estimates.
+
+        predictions = self.group_estimates.reindex(groups)
+
+        missing = predictions.isna().sum()
+
+        if missing > 0:
+            print(
+                f"{missing} groups were not in the training data. Filling with NaN.")
+
+        return predictions.to_numpy()
