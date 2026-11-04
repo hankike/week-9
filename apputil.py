@@ -11,7 +11,23 @@ def GroupEstimate(object):
         self.estimate = estimate
 
     def fit(self, X, y):
-        return None
+        if len(X) != len(y):
+            raise ValueError("X and y do not have the same length.")
+            # Installing a check so that our X and y are the same length
+
+        df = pd.concat([X, pd.Series(y, name='target')], axis=1)
+        # Combing our same length X and y into a df named df.
+
+        grouped = df.groupby(list(X.columns))
+        # Grouping our df
+
+        # Make our actual mean and median estimates, mean is first cause idk.
+        if self.estimate == 'mean':
+            self.group_estimates = grouped['target'].mean()
+        else:
+            self.group_estimates = grouped['target'].median()
+
+        return self
 
     def predict(self, X):
         return None
